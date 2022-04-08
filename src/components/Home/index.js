@@ -1,5 +1,5 @@
 import React ,{useEffect}from "react";
-import {FlatList,SafeAreaView,View,ActivityIndicator} from "react-native";
+import {FlatList,SafeAreaView} from "react-native";
 import { useSelector , useDispatch } from "react-redux";
 import {getUsers} from "../../redux/actions/userActions";
 import { useNavigation } from "@react-navigation/native";
@@ -14,15 +14,24 @@ import {loadMoreItem} from "../../redux/api/usersApi";
 function Home () {
 
     const dispatch = useDispatch();
-    const users   = useSelector(state => state.usersReducer.users);
-    
 
-    //const [users,setUsers] = useState([]);
-    //const [currentPage,setCurrentPage] = useState(1);
-    //const [isLoading,setIsLoading] = useState(false);
+    useEffect(() => {
+        
+        dispatch(getUsers());
+    } , []);
+    
+    const users   = useSelector(state => state.usersReducer.users);
     const navigation = useNavigation();
 
 
+    
+    //const [users,setUsers] = useState([]);
+    //const [currentPage,setCurrentPage] = useState(1);
+    //const [isLoading,setIsLoading] = useState(false);
+    
+
+
+    
     /*const renderLoader = () => {
         return (
             isLoading ?
@@ -46,17 +55,14 @@ function Home () {
              });
     }*/
 
-    useEffect(() => {
-        //getUsers();
-        dispatch(getUsers());
-    } , []);
+    
 
     return (
       <SafeAreaView>  
         <FlatList data={users} keyExtractor={item => item.email} ListItemSperator={ListItemSperator}
           renderItem={({item}) => 
                 (<ListItem image={item.picture.large} name={item.name.first}
-                           email={item.email} onPress={()=>{navigation.navigate("DetailsScreen",{itemPicture:item.picture,itemName:item.name,itemEmail:item.email} );}}/>)}
+                           email={item.email} onPress={()=>{navigation.navigate("DetailsScreen",{itemPicture:item.picture.large,itemName:item.name.first,itemEmail:item.email} );}}/>)}
             onEndReached={loadMoreItem}
           onEndReachedThreshold={0}                                
                            />
